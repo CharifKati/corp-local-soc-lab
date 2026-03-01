@@ -1,0 +1,5 @@
+index=main EventCode=4769 Ticket_Encryption_Type=0x17
+| where Service_Name!="krbtgt" AND NOT like(Service_Name, "%$")
+| stats count by Client_Address, Service_Name
+| where count > 2
+| sort -count
