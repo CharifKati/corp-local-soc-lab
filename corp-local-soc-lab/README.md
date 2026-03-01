@@ -21,19 +21,6 @@ During the lab I found that `src_ip` does not exist as a field in raw Windows Se
 
 ---
 
-## Things That Did Not Work As Expected
-
-**EventCode 4662 does not fire by default.**
-Two attacks depend on this event - AD Enumeration and DCSync. It only logs if `Audit Directory Service Access` is explicitly enabled via `auditpol`. Off by default on Windows Server 2022. I found out because Splunk kept returning nothing even though the attacks were running fine. A SOC without this enabled has a complete blind spot for DCSync and would never know.
-
-**EventCode 4728 did not fire during the backdoor account attack.**
-The group membership add to Domain Admins should have generated this event but did not in this environment. The detection rule was adjusted to filter on the account name pattern via EventCode 4720 instead, which still caught the attack. It highlights that a rule correlating 4720 and 4728 can miss this in certain configurations.
-
-**Kerberoasting leaves almost no trace.**
-The only detectable moment is the initial TGS request. After that, cracking happens entirely offline with zero further DC interaction. If the service account enforces AES, the hash is not crackable with standard tools. svc_sql was using RC4, which is why it worked.
-
----
-
 ## Detection Rules
 
 ### 01 - AD Enumeration (T1087)
@@ -131,6 +118,19 @@ corp-local-soc-lab/
 | kali | Kali Linux | 192.168.233.128 | Attacker |
 
 Logs shipped via Splunk Universal Forwarder over TCP 9997. Sysmon installed on DC01 for extended event coverage.
+
+---
+
+## Things That Did Not Work As Expected
+
+**EventCode 4662 does not fire by default.**
+Two attacks depend on this event - AD Enumeration and DCSync. It only logs if `Audit Directory Service Access` is explicitly enabled via `auditpol`. Off by default on Windows Server 2022. I found out because Splunk kept returning nothing even though the attacks were running fine. A SOC without this enabled has a complete blind spot for DCSync and would never know.
+
+**EventCode 4728 did not fire during the backdoor account attack.**
+The group membership add to Domain Admins should have generated this event but did not in this environment. The detection rule was adjusted to filter on the account name pattern via EventCode 4720 instead, which still caught the attack. It highlights that a rule correlating 4720 and 4728 can miss this in certain configurations.
+
+**Kerberoasting leaves almost no trace.**
+The only detectable moment is the initial TGS request. After that, cracking happens entirely offline with zero further DC interaction. If the service account enforces AES, the hash is not crackable with standard tools. svc_sql was using RC4, which is why it worked.
 
 ---
 
