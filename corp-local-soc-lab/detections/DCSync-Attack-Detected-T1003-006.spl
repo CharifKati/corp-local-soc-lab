@@ -1,4 +1,0 @@
-index=main EventCode=4662
-| search Message="*{1131f6aa-9c07-11d1-f79f-00c04fc2dcd2}*" OR Message="*{1131f6ad-9c07-11d1-f79f-00c04fc2dcd2}*"
-| where NOT like(SubjectUserName, "%$")
-| table _time, SubjectUserName, Message

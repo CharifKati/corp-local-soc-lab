@@ -1,3 +1,0 @@
-index=main EventCode=4720
-| where Account_Name="support_user" OR Account_Name LIKE "%support%"
-| table _time, SubjectUserName, Account_Name

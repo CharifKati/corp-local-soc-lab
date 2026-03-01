@@ -1,1 +1,0 @@
-index=main EventCode=4662 | bin _time span=5m | stats count by _time, Account_Name | where count > 20 | sort -count
